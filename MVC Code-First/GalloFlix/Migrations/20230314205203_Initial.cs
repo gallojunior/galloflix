@@ -82,6 +82,8 @@ namespace GalloFlix.Migrations
                     Name = table.Column<string>(type: "varchar(60)", maxLength: 60, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     DateOfBirth = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    ProfilePicture = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
@@ -327,20 +329,20 @@ namespace GalloFlix.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "8badbfa4-09eb-4f53-913b-5655901c02c1", "eddfb1dd-e2ab-49ef-bc45-b648ef3aeb7e", "Administrador", "ADMINISTRADOR" },
-                    { "9b6a88a6-a128-40d4-98bd-e6edd9a55070", "0cf4d500-ae46-406c-a304-a2cf8668e622", "Moderador", "MODERADOR" },
-                    { "9fb36da3-fdd9-4551-90fc-874381ae7344", "d82052c8-2144-4998-b97d-9be84a82bfe5", "Usuário", "USUÁRIO" }
+                    { "0ff9ea06-afb7-453d-959c-94913a432d9c", "6e1af467-aa6e-46d6-83ca-363065c87f74", "Administrador", "ADMINISTRADOR" },
+                    { "6bb7e305-c270-4c91-bd83-445a1b6f5ba2", "0145a6eb-cf16-40c8-8679-d440132a5841", "Usuário", "USUÁRIO" },
+                    { "7a57830f-c64d-42dd-ae17-cc8cac2af86e", "3605a6ac-0ff2-4e2f-ba97-2e3377222d6d", "Moderador", "MODERADOR" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "e45c137d-0565-4bf0-ae5c-f5a96333aecf", 0, "cbb00f7e-6958-4bf6-a528-e845fc4ac994", new DateTime(1981, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "AppUser", "gallojunior@gmail.com", true, false, null, "José Antonio Gallo Junior", "GALLOJUNIOR@GMAIL.COM", "GALLOJUNIOR", "AQAAAAEAACcQAAAAELcDmcML3nNSIiWs6mm7REUlJXKJLW9dxs/j8fANY1nnA31THy4Fstb3lAA3Ulyz5A==", "14981544857", true, "358f54e2-ae07-4fe3-b7fd-2be771206a4c", false, "GalloJunior" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfilePicture", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "6f652503-1319-4fcd-9308-ea83b13b3890", 0, "ba74f89e-877c-4fe1-b839-7aaf776a50f6", new DateTime(1981, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "AppUser", "gallojunior@gmail.com", true, false, null, "José Antonio Gallo Junior", "GALLOJUNIOR@GMAIL.COM", "GALLOJUNIOR", "AQAAAAEAACcQAAAAEOMzo+Z4/J5TdUcYvUbSuyWbdtiKxPV0ZGriybKvpAjhYk49QnwIC55LrbBJyu9wUg==", "14981544857", true, "//img//users/avatar.png", "1f4ed803-52cb-4738-b662-0fe9553a2f3a", false, "GalloJunior" });
 
             migrationBuilder.InsertData(
                 table: "UserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "8badbfa4-09eb-4f53-913b-5655901c02c1", "e45c137d-0565-4bf0-ae5c-f5a96333aecf" });
+                values: new object[] { "0ff9ea06-afb7-453d-959c-94913a432d9c", "6f652503-1319-4fcd-9308-ea83b13b3890" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieComment_MovieId",

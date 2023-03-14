@@ -44,7 +44,8 @@ public class AppDbSeed
                 LockoutEnabled = false,
                 PhoneNumber = "14981544857",
                 PhoneNumberConfirmed = true,
-                EmailConfirmed =  true
+                EmailConfirmed =  true,
+                ProfilePicture = "//img//users/avatar.png"
             }
         };
         foreach (var user in users)
