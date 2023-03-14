@@ -12,10 +12,19 @@ public class AppDbContext : IdentityDbContext
     }
 
     public DbSet<AppUser> AppUsers { get; set; }
+    public DbSet<Genre> Genres { get; set; }
+    public DbSet<Movie> Movies { get; set; }
+    public DbSet<MovieComment> MovieComments { get; set; }
+    public DbSet<MovieGenre> MovieGenres { get; set; }
+    public DbSet<MovieRating> MovieRatings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        #region Many to Many - MovieComment
+        
+        #endregion
 
         #region Populate Roles - Perfis de Usuário
         List<IdentityRole> roles = new()
