@@ -1,0 +1,25 @@
+cd "MVC Code-First"
+dotnet new sln --name GalloFlix
+dotnet new mvc -o GalloFlix -f net6.0
+dotnet sln add GalloFlix\GalloFlix.csproj
+
+/* Instalando o pacote de acesso a dados */
+cd GalloFlix
+dotnet add package Microsoft.EntityFrameworkCore --version 6.0.14
+dotnet add package Pomelo.EntityFrameworkCore.MySql --version 6.0.2
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.14
+
+/* Instalando o pacote do Identiy - Para gestão de usuários */
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore --version 6.0.14
+
+/* Opcional - Pórem modifica a codificação */
+/* Alterar a opção Nullabe do projeto*/
+
+/* Pasta Models - Criar classe de Usuário */
+
+/* Criar Pasta Data */
+
+/* Pata Data - Criar a classe AppDbContext */
+
+
+
