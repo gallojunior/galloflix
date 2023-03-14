@@ -19,6 +19,131 @@ namespace GalloFlix.Migrations
                 .HasAnnotation("ProductVersion", "6.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("GalloFlix.Models.Genre", b =>
+                {
+                    b.Property<byte>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint unsigned");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genre");
+                });
+
+            modelBuilder.Entity("GalloFlix.Models.Movie", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<byte>("AgeRating")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.Property<short>("Duration")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Image")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<short>("MovieYear")
+                        .HasColumnType("Year");
+
+                    b.Property<string>("OriginalTitle")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Synopsis")
+                        .IsRequired()
+                        .HasMaxLength(8000)
+                        .HasColumnType("varchar(8000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Movie");
+                });
+
+            modelBuilder.Entity("GalloFlix.Models.MovieComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CommentDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CommentText")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MovieComment");
+                });
+
+            modelBuilder.Entity("GalloFlix.Models.MovieGenre", b =>
+                {
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<byte>("GenreId")
+                        .HasColumnType("tinyint unsigned")
+                        .HasColumnOrder(2);
+
+                    b.HasKey("MovieId", "GenreId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("MovieGenre");
+                });
+
+            modelBuilder.Entity("GalloFlix.Models.MovieRating", b =>
+                {
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnOrder(2);
+
+                    b.Property<DateTime>("RatingDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<byte>("RatingValue")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.HasKey("MovieId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MovieRating");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -42,27 +167,27 @@ namespace GalloFlix.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = "3c417c82-2ff5-466b-943b-8f93b6496110",
-                            ConcurrencyStamp = "e0f0a3a1-4b55-4ae8-abc1-dd0f1d0f82ab",
+                            Id = "8badbfa4-09eb-4f53-913b-5655901c02c1",
+                            ConcurrencyStamp = "eddfb1dd-e2ab-49ef-bc45-b648ef3aeb7e",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         },
                         new
                         {
-                            Id = "cabeb879-8731-473e-b101-aa8fdd733320",
-                            ConcurrencyStamp = "6b750ef8-0370-4e98-8f3b-49948d69c659",
+                            Id = "9b6a88a6-a128-40d4-98bd-e6edd9a55070",
+                            ConcurrencyStamp = "0cf4d500-ae46-406c-a304-a2cf8668e622",
                             Name = "Moderador",
                             NormalizedName = "MODERADOR"
                         },
                         new
                         {
-                            Id = "b65bd750-19f3-4d2f-a4ca-05625ceea1e1",
-                            ConcurrencyStamp = "d2911852-7f5b-4ca8-ae86-b38967b34e43",
+                            Id = "9fb36da3-fdd9-4551-90fc-874381ae7344",
+                            ConcurrencyStamp = "d82052c8-2144-4998-b97d-9be84a82bfe5",
                             Name = "Usuário",
                             NormalizedName = "USUÁRIO"
                         });
@@ -88,7 +213,7 @@ namespace GalloFlix.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
@@ -156,7 +281,7 @@ namespace GalloFlix.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("Users", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
@@ -181,7 +306,7 @@ namespace GalloFlix.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("UserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -203,7 +328,7 @@ namespace GalloFlix.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("UserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -218,7 +343,14 @@ namespace GalloFlix.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("UserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "e45c137d-0565-4bf0-ae5c-f5a96333aecf",
+                            RoleId = "8badbfa4-09eb-4f53-913b-5655901c02c1"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -237,7 +369,7 @@ namespace GalloFlix.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("UserTokens", (string)null);
                 });
 
             modelBuilder.Entity("GalloFlix.Models.AppUser", b =>
@@ -257,23 +389,80 @@ namespace GalloFlix.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8e17df16-15ba-4d2c-9da8-801a5fe222bd",
+                            Id = "e45c137d-0565-4bf0-ae5c-f5a96333aecf",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1a0c1cfb-dadf-4b91-91fa-8e573779704c",
+                            ConcurrencyStamp = "cbb00f7e-6958-4bf6-a528-e845fc4ac994",
                             Email = "gallojunior@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "GALLOJUNIOR@GMAIL.COM",
                             NormalizedUserName = "GALLOJUNIOR",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGRR+nZgUli5rbHPq1usb8IPi5uV14mbwfoFvJUlp5pAH4OCRAGY0aJaybIXjQ0HGw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELcDmcML3nNSIiWs6mm7REUlJXKJLW9dxs/j8fANY1nnA31THy4Fstb3lAA3Ulyz5A==",
                             PhoneNumber = "14981544857",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "3bb12244-c470-4354-b1e5-9c0bdf96b020",
+                            SecurityStamp = "358f54e2-ae07-4fe3-b7fd-2be771206a4c",
                             TwoFactorEnabled = false,
                             UserName = "GalloJunior",
                             DateOfBirth = new DateTime(1981, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "José Antonio Gallo Junior"
                         });
+                });
+
+            modelBuilder.Entity("GalloFlix.Models.MovieComment", b =>
+                {
+                    b.HasOne("GalloFlix.Models.Movie", "Movie")
+                        .WithMany("Comments")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GalloFlix.Models.AppUser", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GalloFlix.Models.MovieGenre", b =>
+                {
+                    b.HasOne("GalloFlix.Models.Genre", "Genre")
+                        .WithMany("Movies")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GalloFlix.Models.Movie", "Movie")
+                        .WithMany("Genres")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
+
+                    b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("GalloFlix.Models.MovieRating", b =>
+                {
+                    b.HasOne("GalloFlix.Models.Movie", "Movie")
+                        .WithMany("Ratings")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GalloFlix.Models.AppUser", "User")
+                        .WithMany("Ratings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -325,6 +514,27 @@ namespace GalloFlix.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("GalloFlix.Models.Genre", b =>
+                {
+                    b.Navigation("Movies");
+                });
+
+            modelBuilder.Entity("GalloFlix.Models.Movie", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Genres");
+
+                    b.Navigation("Ratings");
+                });
+
+            modelBuilder.Entity("GalloFlix.Models.AppUser", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618
         }

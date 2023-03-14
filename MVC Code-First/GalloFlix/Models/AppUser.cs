@@ -12,4 +12,8 @@ public class AppUser : IdentityUser
     [Required]
     [DataType(DataType.Date)]
     public DateTime DateOfBirth { get; set; }
+
+    public ICollection<MovieComment> Comments { get; set; }
+    public ICollection<MovieRating> Ratings { get; set; }
+
 }

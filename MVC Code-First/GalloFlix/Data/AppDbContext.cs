@@ -21,56 +21,83 @@ public class AppDbContext : IdentityDbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        AppDbSeed appDbSeed = new(builder);
+
+        builder.Entity<IdentityUser>(b =>
+            {
+                b.ToTable("Users");
+            });
+
+        builder.Entity<IdentityUserClaim<string>>(b =>
+        {
+            b.ToTable("UserClaims");
+        });
+
+        builder.Entity<IdentityUserLogin<string>>(b =>
+        {
+            b.ToTable("UserLogins");
+        });
+
+        builder.Entity<IdentityUserToken<string>>(b =>
+        {
+            b.ToTable("UserTokens");
+        });
+
+        builder.Entity<IdentityRole>(b =>
+        {
+            b.ToTable("Roles");
+        });
+
+        builder.Entity<IdentityRoleClaim<string>>(b =>
+        {
+            b.ToTable("RoleClaims");
+        });
+
+        builder.Entity<IdentityUserRole<string>>(b =>
+        {
+            b.ToTable("UserRoles");
+        });
 
         #region Many to Many - MovieComment
-        
+        builder.Entity<MovieComment>()
+            .HasOne(mc => mc.Movie)
+            .WithMany(m => m.Comments)
+            .HasForeignKey(mc => mc.MovieId);
+
+        builder.Entity<MovieComment>()
+            .HasOne(mc => mc.User)
+            .WithMany(u => u.Comments)
+            .HasForeignKey(mc => mc.UserId);
         #endregion
 
-        #region Populate Roles - Perfis de Usuário
-        List<IdentityRole> roles = new()
-        {
-            new IdentityRole(){
-                Id = Guid.NewGuid().ToString(),
-                Name = "Administrador",
-                NormalizedName = "ADMINISTRADOR"
-            },
-            new IdentityRole(){
-                Id = Guid.NewGuid().ToString(),
-                Name = "Moderador",
-                NormalizedName = "MODERADOR"
-            },
-            new IdentityRole(){
-                Id = Guid.NewGuid().ToString(),
-                Name = "Usuário",
-                NormalizedName = "USUÁRIO"
-            }
-        };
-        builder.Entity<IdentityRole>().HasData(roles);
+        #region Many to Many - MovieGenres
+        builder.Entity<MovieGenre>().HasKey(
+            mg => new { mg.MovieId, mg.GenreId }
+        );
+        builder.Entity<MovieGenre>()
+            .HasOne(mg => mg.Movie)
+            .WithMany(m => m.Genres)
+            .HasForeignKey(mg => mg.MovieId);
+
+        builder.Entity<MovieGenre>()
+            .HasOne(mg => mg.Genre)
+            .WithMany(g => g.Movies)
+            .HasForeignKey(mg => mg.GenreId);
         #endregion
 
-        #region Populate AppUser - Usuários
-        List<AppUser> users = new()
-        {
-            new AppUser(){
-                Id = Guid.NewGuid().ToString(),
-                Name = "José Antonio Gallo Junior",
-                DateOfBirth = DateTime.Parse("05/08/1981"),
-                Email = "gallojunior@gmail.com",
-                NormalizedEmail = "GALLOJUNIOR@GMAIL.COM",
-                UserName = "GalloJunior",
-                NormalizedUserName = "GALLOJUNIOR",
-                LockoutEnabled = false,
-                PhoneNumber = "14981544857",
-                PhoneNumberConfirmed = true,
-                EmailConfirmed =  true
-            }
-        };
-        foreach (var user in users)
-        {
-            PasswordHasher<AppUser> passwordHasher = new PasswordHasher<AppUser>();
-            user.PasswordHash = passwordHasher.HashPassword(user, "@Etec123");
-        }
-        builder.Entity<AppUser>().HasData(users);
+        #region Many to Many - MovieRatings
+        builder.Entity<MovieRating>().HasKey(
+            mr => new { mr.MovieId, mr.UserId }
+        );
+        builder.Entity<MovieRating>()
+            .HasOne(mr => mr.Movie)
+            .WithMany(m => m.Ratings)
+            .HasForeignKey(mr => mr.MovieId);
+
+        builder.Entity<MovieRating>()
+            .HasOne(mr => mr.User)
+            .WithMany(u => u.Ratings)
+            .HasForeignKey(mr => mr.UserId);
         #endregion
     }
 }
