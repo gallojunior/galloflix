@@ -36,7 +36,7 @@ if (jQuery('.d-slider2').length > 0) {
     const options = {
         centeredSlides: false,
         loop: false,
-        slidesPerView: 3,
+        slidesPerView: 4,
         autoplay:false,
         spaceBetween: 32,
         breakpoints: {
@@ -44,9 +44,9 @@ if (jQuery('.d-slider2').length > 0) {
           550: { slidesPerView: 2 },
           991: { slidesPerView: 2 },
           1200: { slidesPerView: 3 },
-          1400: { slidesPerView: 3 },
-          1500: { slidesPerView: 3 },
-          1920: { slidesPerView: 3 },
+          1400: { slidesPerView: 4 },
+          1500: { slidesPerView: 4 },
+          1920: { slidesPerView: 4 },
           2040: { slidesPerView: 4 },
           2440: { slidesPerView: 4 }
       },

@@ -1,4 +1,4 @@
-USE GalloFlixDb;
+USE GalloFlix;
 
 INSERT INTO Genre(Id, Name) VALUES
 (1, 'Ação'),
