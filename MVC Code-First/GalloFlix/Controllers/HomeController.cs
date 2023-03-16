@@ -56,7 +56,7 @@ public class HomeController : Controller
             .Include(m => m.Ratings)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (movie == null)
-            return PageNotFound();
+            return RedirectToAction(nameof(PageNotFound));
         return View(movie);
     }
 
