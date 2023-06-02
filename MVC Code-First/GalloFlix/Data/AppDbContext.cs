@@ -7,6 +7,7 @@ namespace GalloFlix.Data;
 
 public class AppDbContext : IdentityDbContext
 {
+
     public AppDbContext(DbContextOptions options) : base(options)
     {
     }
@@ -23,57 +24,49 @@ public class AppDbContext : IdentityDbContext
         base.OnModelCreating(builder);
         AppDbSeed appDbSeed = new(builder);
 
-        builder.Entity<IdentityUser>(b =>
-            {
-                b.ToTable("Users");
-            });
-
-        builder.Entity<IdentityUserClaim<string>>(b =>
-        {
+        // FluentAPI
+        #region Personalização do Identity
+        builder.Entity<IdentityUser>(b => {
+            b.ToTable("Users");
+        });
+        builder.Entity<IdentityUserClaim<string>>(b => {
             b.ToTable("UserClaims");
         });
-
-        builder.Entity<IdentityUserLogin<string>>(b =>
-        {
+        builder.Entity<IdentityUserLogin<string>>(b => {
             b.ToTable("UserLogins");
         });
-
-        builder.Entity<IdentityUserToken<string>>(b =>
-        {
+        builder.Entity<IdentityUserToken<string>>(b => {
             b.ToTable("UserTokens");
         });
-
-        builder.Entity<IdentityRole>(b =>
-        {
+        builder.Entity<IdentityRole>(b => {
             b.ToTable("Roles");
         });
-
-        builder.Entity<IdentityRoleClaim<string>>(b =>
-        {
+        builder.Entity<IdentityRoleClaim<string>>(b => {
             b.ToTable("RoleClaims");
         });
-
-        builder.Entity<IdentityUserRole<string>>(b =>
-        {
+        builder.Entity<IdentityUserRole<string>>(b => {
             b.ToTable("UserRoles");
         });
+        #endregion
 
-        #region Many to Many - MovieComment
+        #region Many To Many - MovieComment
         builder.Entity<MovieComment>()
             .HasOne(mc => mc.Movie)
             .WithMany(m => m.Comments)
             .HasForeignKey(mc => mc.MovieId);
-
+        
         builder.Entity<MovieComment>()
             .HasOne(mc => mc.User)
             .WithMany(u => u.Comments)
             .HasForeignKey(mc => mc.UserId);
         #endregion
 
-        #region Many to Many - MovieGenres
+        #region Many To Many - MovieGenre
+        // Definição de Chave Primária Composta
         builder.Entity<MovieGenre>().HasKey(
             mg => new { mg.MovieId, mg.GenreId }
-        );
+        );     
+
         builder.Entity<MovieGenre>()
             .HasOne(mg => mg.Movie)
             .WithMany(m => m.Genres)
@@ -85,10 +78,11 @@ public class AppDbContext : IdentityDbContext
             .HasForeignKey(mg => mg.GenreId);
         #endregion
 
-        #region Many to Many - MovieRatings
+        #region Many To Many MovieRating
         builder.Entity<MovieRating>().HasKey(
             mr => new { mr.MovieId, mr.UserId }
         );
+
         builder.Entity<MovieRating>()
             .HasOne(mr => mr.Movie)
             .WithMany(m => m.Ratings)
@@ -99,5 +93,7 @@ public class AppDbContext : IdentityDbContext
             .WithMany(u => u.Ratings)
             .HasForeignKey(mr => mr.UserId);
         #endregion
+
     }
+    
 }

@@ -16,7 +16,7 @@ namespace GalloFlix.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.14")
+                .HasAnnotation("ProductVersion", "6.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("GalloFlix.Models.Genre", b =>
@@ -172,22 +172,22 @@ namespace GalloFlix.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0ff9ea06-afb7-453d-959c-94913a432d9c",
-                            ConcurrencyStamp = "6e1af467-aa6e-46d6-83ca-363065c87f74",
+                            Id = "42e1a6cc-5c24-450c-b1da-05cf5306238c",
+                            ConcurrencyStamp = "5a52fcd3-c476-4d9d-982d-0485fb9f81f9",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         },
                         new
                         {
-                            Id = "7a57830f-c64d-42dd-ae17-cc8cac2af86e",
-                            ConcurrencyStamp = "3605a6ac-0ff2-4e2f-ba97-2e3377222d6d",
+                            Id = "e8f02e5a-8403-4f21-ab8d-f78ee22fc46f",
+                            ConcurrencyStamp = "4451ca90-9c31-4b58-8668-bd756c7c0e5c",
                             Name = "Moderador",
                             NormalizedName = "MODERADOR"
                         },
                         new
                         {
-                            Id = "6bb7e305-c270-4c91-bd83-445a1b6f5ba2",
-                            ConcurrencyStamp = "0145a6eb-cf16-40c8-8679-d440132a5841",
+                            Id = "2184a8d3-d06c-4e95-b787-727c0cb79970",
+                            ConcurrencyStamp = "81dec6aa-0ab5-49b3-81d0-8e4ca82fb173",
                             Name = "Usuário",
                             NormalizedName = "USUÁRIO"
                         });
@@ -348,8 +348,8 @@ namespace GalloFlix.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "6f652503-1319-4fcd-9308-ea83b13b3890",
-                            RoleId = "0ff9ea06-afb7-453d-959c-94913a432d9c"
+                            UserId = "0ebcba5d-0616-463e-a987-f3354e481702",
+                            RoleId = "42e1a6cc-5c24-450c-b1da-05cf5306238c"
                         });
                 });
 
@@ -393,23 +393,23 @@ namespace GalloFlix.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6f652503-1319-4fcd-9308-ea83b13b3890",
+                            Id = "0ebcba5d-0616-463e-a987-f3354e481702",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ba74f89e-877c-4fe1-b839-7aaf776a50f6",
+                            ConcurrencyStamp = "a893163b-5d1f-4cf0-a952-813c01d98e7c",
                             Email = "gallojunior@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "GALLOJUNIOR@GMAIL.COM",
                             NormalizedUserName = "GALLOJUNIOR",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOMzo+Z4/J5TdUcYvUbSuyWbdtiKxPV0ZGriybKvpAjhYk49QnwIC55LrbBJyu9wUg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBhGik+SDPMpeQXx8EsZhJP72H0GxpyEf8a5BB5xtK2EvRoRouNhUf/rGbyYn90FfQ==",
                             PhoneNumber = "14981544857",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "1f4ed803-52cb-4738-b662-0fe9553a2f3a",
+                            SecurityStamp = "6d8f2535-b238-4e82-aafa-f629830a317c",
                             TwoFactorEnabled = false,
                             UserName = "GalloJunior",
                             DateOfBirth = new DateTime(1981, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "José Antonio Gallo Junior",
-                            ProfilePicture = "//img//users/avatar.png"
+                            ProfilePicture = "/img/users/avatar.png"
                         });
                 });
 

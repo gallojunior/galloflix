@@ -11,17 +11,20 @@ public class AppDbSeed
         #region Populate Roles - Perfis de Usuário
         List<IdentityRole> roles = new()
         {
-            new IdentityRole(){
+            new IdentityRole()
+            {
                 Id = Guid.NewGuid().ToString(),
                 Name = "Administrador",
                 NormalizedName = "ADMINISTRADOR"
             },
-            new IdentityRole(){
+            new IdentityRole()
+            {
                 Id = Guid.NewGuid().ToString(),
                 Name = "Moderador",
                 NormalizedName = "MODERADOR"
             },
-            new IdentityRole(){
+            new IdentityRole()
+            {
                 Id = Guid.NewGuid().ToString(),
                 Name = "Usuário",
                 NormalizedName = "USUÁRIO"
@@ -29,10 +32,9 @@ public class AppDbSeed
         };
         builder.Entity<IdentityRole>().HasData(roles);
         #endregion
-
+    
         #region Populate AppUser - Usuários
-        List<AppUser> users = new()
-        {
+        List<AppUser> users = new(){
             new AppUser(){
                 Id = Guid.NewGuid().ToString(),
                 Name = "José Antonio Gallo Junior",
@@ -44,23 +46,22 @@ public class AppDbSeed
                 LockoutEnabled = false,
                 PhoneNumber = "14981544857",
                 PhoneNumberConfirmed = true,
-                EmailConfirmed =  true,
-                ProfilePicture = "//img//users/avatar.png"
+                EmailConfirmed = true,
+                ProfilePicture = "/img/users/avatar.png"
             }
         };
         foreach (var user in users)
         {
-            PasswordHasher<AppUser> passwordHasher = new PasswordHasher<AppUser>();
-            user.PasswordHash = passwordHasher.HashPassword(user, "@Etec123");
+            PasswordHasher<AppUser> pass = new();
+            user.PasswordHash = pass.HashPassword(user, "@Etec123");
         }
         builder.Entity<AppUser>().HasData(users);
         #endregion
-
-        #region Populate Identity
+    
+        #region Populate UserRole - Usuário com Perfil
         List<IdentityUserRole<string>> userRoles = new()
         {
-            new IdentityUserRole<string>()
-            {
+            new IdentityUserRole<string>() {
                 UserId = users[0].Id,
                 RoleId = roles[0].Id
             }
@@ -68,4 +69,5 @@ public class AppDbSeed
         builder.Entity<IdentityUserRole<string>>().HasData(userRoles);
         #endregion
     }
+
 }

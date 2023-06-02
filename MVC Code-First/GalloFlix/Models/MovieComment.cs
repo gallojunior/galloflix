@@ -13,7 +13,7 @@ public class MovieComment
     [Required]
     public int MovieId { get; set; }
     [ForeignKey("MovieId")]
-    public Movie Movie { get; set; }
+    public Movie Movie { get; set; } // PROPRIEDADE DE NAVEGAÇÃO
 
     [Required]
     public string UserId { get; set; }
@@ -26,4 +26,5 @@ public class MovieComment
 
     [Required]
     public DateTime CommentDate { get; set; }
-}
+
+}   

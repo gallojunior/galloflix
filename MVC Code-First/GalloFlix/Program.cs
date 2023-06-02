@@ -8,15 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Add services to the container.
-string conn = builder.Configuration.GetConnectionString("GalloFlixDb");
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(conn, ServerVersion.AutoDetect(conn)));
+// Objetos auxiliares de Conexão
+string conn = builder.Configuration.GetConnectionString("GalloFlix");
+var version = ServerVersion.AutoDetect(conn);
 
+// Serviço de Conexão com banco de dados
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(conn, version)
+);
+
+// Serviço de Gestão de Usuário - Identity
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
-
 
 var app = builder.Build();
 
@@ -29,21 +33,11 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.Use(async (context, next) =>
-{
-    await next();
-    if (context.Response.StatusCode == 404)
-    {
-        context.Request.Path = "/Home/PageNotFound";
-        await next();
-    }
-});
-
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
