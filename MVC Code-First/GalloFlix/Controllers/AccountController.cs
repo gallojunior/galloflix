@@ -1,47 +1,64 @@
 using System.Net.Mail;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
 using GalloFlix.DataTransferObjects;
+using GalloFlix.Helpers;
 using GalloFlix.Models;
+using GalloFlix.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace GalloFlix.Controllers;
 
-[Authorize(Roles = "Administrador")]
 public class AccountController : Controller
 {
     private readonly ILogger<AccountController> _logger;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly UserManager<AppUser> _userManager;
+    private readonly IUserStore<AppUser> _userStore;
+    private readonly IUserEmailStore<AppUser> _emailStore;
+    private readonly IEmailSender _emailSender;
 
-    public AccountController(ILogger<AccountController> logger, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
+    public AccountController(
+        ILogger<AccountController> logger,
+        SignInManager<AppUser> signInManager,
+        UserManager<AppUser> userManager,
+        IUserStore<AppUser> userStore,
+        IEmailSender emailSender
+)
     {
         _logger = logger;
         _signInManager = signInManager;
         _userManager = userManager;
+        _userStore = userStore;
+        _emailStore = GetEmailStore();
+        _emailSender = emailSender;
     }
 
+    [Authorize(Roles = "Administrador")]
     public IActionResult Index()
     {
         return View();
     }
 
     [HttpGet]
-    [AllowAnonymous]
     public IActionResult Login(string returnUrl)
     {
-        LoginDto loginDto = new();
-        loginDto.ReturnUrl = returnUrl ?? Url.Content("~/");
-        return View(loginDto);
+        LoginDto login = new();
+        login.ReturnUrl = returnUrl ?? Url.Content("~/");
+        return View(login);
     }
 
+
     [HttpPost]
-    [AllowAnonymous]
     public async Task<IActionResult> Login(LoginDto login)
     {
-        // Se o model é válido, faz login
-        if (ModelState.IsValid)
+        // Verificar o modelo e fazer o login
+        Thread.Sleep(5000);
+        if (ModelState.IsValid) // Validação do lado do servidor
         {
             string userName = login.Email;
             if (IsValidEmail(login.Email))
@@ -50,17 +67,18 @@ public class AccountController : Controller
                 if (user != null)
                     userName = user.UserName;
             }
+
             var result = await _signInManager.PasswordSignInAsync(
-                userName, login.Password, login.RememberMe, true
+                userName, login.Password, login.RememberMe, lockoutOnFailure: true
             );
             if (result.Succeeded)
             {
-                _logger.LogInformation($"Usuário { login.Email } acessou o sistema");
+                _logger.LogInformation($"Usuário {login.Email} acessou o sistema");
                 return LocalRedirect(login.ReturnUrl);
             }
             if (result.IsLockedOut)
             {
-                _logger.LogWarning($"Usuário { login.Email } está bloqueado");
+                _logger.LogWarning($"Usuário {login.Email} está bloqueado");
                 return RedirectToAction("Lockout");
             }
             ModelState.AddModelError("login", "Usuário e/ou Senha Inválidos!!!");
@@ -68,7 +86,9 @@ public class AccountController : Controller
         return View(login);
     }
 
+
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Logout()
     {
         _logger.LogInformation($"Usuário {ClaimTypes.Email} fez logoff");
@@ -76,23 +96,100 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
+
     [HttpGet]
-    [AllowAnonymous]
     public IActionResult Register()
     {
         return View();
     }
 
+
     [HttpPost]
-    [AllowAnonymous]
     public async Task<IActionResult> Register(RegisterDto register)
     {
         if (ModelState.IsValid)
         {
-            
+            var user = Activator.CreateInstance<AppUser>();
+
+            user.Name = register.Name;
+            user.DateOfBirth = register.DateOfBirth;
+            user.Email = register.Email;
+
+            await _userStore.SetUserNameAsync(user, register.Email, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, register.Email, CancellationToken.None);
+            var result = await _userManager.CreateAsync(user, register.Password);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation($"Novo usuário registrado com o email {user.Email}.");
+
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Action(
+                    "ConfirmEmail", "Account",
+                    new { userId = userId, code = code },
+                    protocol: Request.Scheme);
+
+                await _userManager.AddToRoleAsync(user, "Usuário");
+
+                await _emailSender.SendEmailAsync(register.Email, "EtecBook - Criação de Conta",
+                    $"Por favor, confirme a criação de sua conta <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicando aqui</a>.");
+
+                return RedirectToAction("RegisterConfirmation");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, TranslateIdentityErrors.TranslateErrorMessage(error.Code));
+            }
         }
         return View(register);
     }
+
+
+    [HttpGet]
+    public IActionResult RegisterConfirmation()
+    {
+        return View();
+    }
+
+
+   [HttpGet]
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> ConfirmEmail(string userId, string code)
+    {
+        if (userId == null || code == null)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound($"Não foi possível localizar o usuário.");
+        }
+
+        code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+        var result = await _userManager.ConfirmEmailAsync(user, code);
+        return View(result.Succeeded);
+    }
+
+
+    private IUserEmailStore<AppUser> GetEmailStore()
+    {
+        if (!_userManager.SupportsUserEmail)
+        {
+            throw new NotSupportedException("The default UI requires a user store with email support.");
+        }
+        return (IUserEmailStore<AppUser>)_userStore;
+    }
+
 
     private bool IsValidEmail(string email)
     {
