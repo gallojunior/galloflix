@@ -153,14 +153,6 @@ public class AccountController : Controller
         return View();
     }
 
-
-   [HttpGet]
-    public IActionResult AccessDenied()
-    {
-        return View();
-    }
-
-
     [HttpGet]
     public async Task<IActionResult> ConfirmEmail(string userId, string code)
     {
@@ -180,6 +172,19 @@ public class AccountController : Controller
         return View(result.Succeeded);
     }
 
+
+    [HttpGet]
+    public IActionResult Forget()
+    {
+        return View();
+    }
+
+
+   [HttpGet]
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
 
     private IUserEmailStore<AppUser> GetEmailStore()
     {
