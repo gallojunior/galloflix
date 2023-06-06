@@ -56,9 +56,7 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginDto login)
     {
-        // Verificar o modelo e fazer o login
-        Thread.Sleep(5000);
-        if (ModelState.IsValid) // Validação do lado do servidor
+        if (ModelState.IsValid)
         {
             string userName = login.Email;
             if (IsValidEmail(login.Email))

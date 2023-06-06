@@ -43,8 +43,12 @@ body {
   }
 }
 
-.text-logo {
+.navbar-brand{
   color: darkred;
+}
+
+.text-logo {
+  color: var(--bs-body-color);
 }
 
 .loader.simple-loader {
