@@ -46,3 +46,19 @@ body {
 .text-logo {
   color: darkred;
 }
+
+.loader.simple-loader {
+  background-color: rgba(0, 0, 0, 0.9);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  text-align: center;  
+  overflow: hidden !important;
+  right: 0px;
+  z-index: 1500;
+}
+
+.loader.simple-loader img{
+  left: -200px;
+  width: 25%;
+}
