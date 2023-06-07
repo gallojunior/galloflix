@@ -178,11 +178,66 @@ public class AccountController : Controller
     }
 
 
-   [HttpGet]
+    [HttpPost]
+    public async Task<IActionResult> Forget(ForgetDto forget)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.FindByEmailAsync(forget.Email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                // Não revelar que o usuário não existe ou que não está confirmado
+                return RedirectToAction("ForgotPasswordConfirmation");
+            }
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Action(
+                action: "ResetPassword",
+                controller: "Account",
+                values: new { email = forget.Email, code = code },
+                protocol: Request.Scheme);
+
+            await _emailSender.SendEmailAsync(
+                email: forget.Email,
+                subject: "Recuperar Senha",
+                htmlMessage: $"Para definir uma nova senha <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clique aqui</a>.");
+
+            return RedirectToAction("ForgotPasswordConfirmation");
+        }
+        return View();
+    }
+
+
+    [HttpGet]
     public IActionResult AccessDenied()
     {
         return View();
     }
+
+
+    [HttpGet]
+    public IActionResult ForgotPasswordConfirmation()
+    {
+        return View();
+    }
+
+
+    [HttpGet]
+    public IActionResult ResetPassword(string email, string code)
+    {
+        if (code == null || string.IsNullOrEmpty(email))
+        {
+            return BadRequest("Solicitação Inválida!!!");
+        }
+        ResetPasswordDto reset = new
+        (
+            email: email,
+            code: Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+        );
+        return View(reset);
+    }
+
 
     private IUserEmailStore<AppUser> GetEmailStore()
     {
